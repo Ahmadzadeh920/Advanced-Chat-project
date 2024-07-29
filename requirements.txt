@@ -1,0 +1,48 @@
+# general  modules
+django==4.2
+tzdata
+setuptools
+python-decouple
+Pillow
+
+#database
+psycopg2-binary
+
+
+
+
+# third party modules
+djangorestframework
+markdown       # Markdown support for the browsable API.
+django-filter  # Filtering support
+
+
+
+# refactoring
+flake8
+black
+pytest
+pytest-django
+
+
+# documentations
+coreapi
+
+
+
+# admin Panel 
+django-jazzmin
+
+
+
+
+# data
+Faker
+
+
+# background Process and cache
+celery
+Redis
+django-celery-beat # for bothe backend and worker  
+django-redis # for bothe backend and worker  
+
