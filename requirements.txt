@@ -9,7 +9,8 @@ Pillow
 psycopg2-binary
 
 
-
+# environmental variables
+python-dotenv
 
 # third party modules
 djangorestframework
