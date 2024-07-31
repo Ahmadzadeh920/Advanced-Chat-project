@@ -19,6 +19,11 @@ django-filter  # Filtering support
 
 
 
+# Authorization
+django-allauth # for both backend and worker
+django-rest-auth
+
+
 # refactoring
 flake8
 black
