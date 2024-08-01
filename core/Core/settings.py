@@ -46,9 +46,9 @@ INSTALLED_APPS = [
     "accounts",
     "jazzmin",
     "rest_framework",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount"
+    "rest_framework_simplejwt",
+    "mail_templated",
+   
     
    
     
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "allauth.account.middleware.AccountMiddleware",
+    
 ]
 
 ROOT_URLCONF = "Core.urls"
@@ -70,7 +70,10 @@ ROOT_URLCONF = "Core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
+
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -142,7 +145,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # For Deployment
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -164,10 +171,8 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",  # this is for coreapi for documentations of api versions
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-        
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -177,15 +182,9 @@ REST_FRAMEWORK = {
 }
 
 
+# Email
 
-# Allauth module
-SITE_ID = 1
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',  # Default
-    'allauth.account.auth_backends.AuthenticationBackend',  # Allauth
-)
-
-# Optional Allauth configurations
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False  # Prevent auto redirects
+PASSWORD_ACTIVE_BASE_URL = "http://127.0.0.1:8000/accounts/api/v1/activate/jwt/"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp"
+EMAIL_PORT = 25

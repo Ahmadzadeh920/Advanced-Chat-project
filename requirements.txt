@@ -20,9 +20,7 @@ django-filter  # Filtering support
 
 
 # Authorization
-django-allauth # for both backend and worker
-django-rest-auth
-
+djangorestframework-simplejwt
 
 # refactoring
 flake8
@@ -34,7 +32,8 @@ pytest-django
 # documentations
 coreapi
 
-
+#email third party
+django-mail-templated
 
 # admin Panel 
 django-jazzmin

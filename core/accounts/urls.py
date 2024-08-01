@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import *
+from django.urls import include
 
+app_name = "accounts"
 
 urlpatterns = [
-    path('register/', CustomRegisterView.as_view(), name='rest_register'),
-   ]
+    path("api/v1/", include("accounts.api-V1.urls")),
+]
