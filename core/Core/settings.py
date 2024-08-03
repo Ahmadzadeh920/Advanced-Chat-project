@@ -37,6 +37,7 @@ ALLOWED_HOSTS = os.environ.get("SERVERNAMES").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,10 +45,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "accounts",
-    "jazzmin",
     "rest_framework",
+    "rest_framework.authtoken",
     "rest_framework_simplejwt",
     "mail_templated",
+    "drf_yasg",
+    "rest_framework_simplejwt.token_blacklist",
    
     
    
@@ -183,8 +186,13 @@ REST_FRAMEWORK = {
 
 
 # Email
-
-PASSWORD_ACTIVE_BASE_URL = "http://127.0.0.1:8000/accounts/api/v1/activate/jwt/"
+domain = os.getenv("Domain")
+PASSWORD_ACTIVE_BASE_URL = domain +"accounts/api/v1/activate/jwt/"
+PASSWORD_RESET_BASE_URL= domain +"accounts/api/v1/reset/pass/"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp"
-EMAIL_PORT = 25
+EMAIL_HOST = "smtp4dev"
+EMAIL_PORT = "25"
+EMAIL_USE_TLS = False
+
+EMAIL_HOST_USER = ""
+EMAIL_HOST_PASSWORD = ""

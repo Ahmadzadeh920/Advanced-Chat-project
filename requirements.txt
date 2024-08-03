@@ -31,6 +31,8 @@ pytest-django
 
 # documentations
 coreapi
+drf-yasg
+drf-yasg[validation]
 
 #email third party
 django-mail-templated
