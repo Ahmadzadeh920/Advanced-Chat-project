@@ -20,4 +20,5 @@ urlpatterns = [
     
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path( "activate/jwt/<str:token>", ActivationAccountJWT.as_view(), name="activation_account_jwt",),
+    path( "profile/<int:id>/", ProfileAPIView.as_view(), name="profile_api_view",),
    ]

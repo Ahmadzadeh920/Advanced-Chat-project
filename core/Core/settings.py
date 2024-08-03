@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "accounts",
     "rest_framework",
     "rest_framework.authtoken",
-    "rest_framework_simplejwt",
+    #"rest_framework_simplejwt",
     "mail_templated",
     "drf_yasg",
     "rest_framework_simplejwt.token_blacklist",
@@ -174,7 +174,7 @@ AUTH_USER_MODEL = "accounts.CustomUser"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",  # this is for coreapi for documentations of api versions
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
 
     ],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
@@ -183,6 +183,15 @@ REST_FRAMEWORK = {
     ],
     
 }
+
+
+
+# this setting for swagger documentation api view
+SWAGGER_SETTINGS = {"SECURITY_DEFINITIONS": 
+                    {"Basic": {"type": "basic"}},
+                       'USE_SESSION_AUTH': True
+
+                    }
 
 
 # Email

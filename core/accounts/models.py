@@ -6,7 +6,8 @@ from django.contrib.auth.models import (
 )
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 # Create your models here.
 
@@ -66,7 +67,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Role(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True ,)
     title = models.CharField()
     desc = models.TextField()
 
@@ -77,7 +78,7 @@ class Role(models.Model):
 # class profile
 class Profile(models.Model):
     username = None
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser,related_name="User", on_delete=models.CASCADE)
     name = models.CharField()
     last_name = models.CharField()
     profile_picture = models.ImageField(
@@ -87,8 +88,12 @@ class Profile(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="roles")
 
     def __str__(self):
-        return f"{self.user.username} Profile"
-
+        return f"{self.user.email} Profile"
+    
+    @receiver(post_save, sender=CustomUser)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            Profile.objects.create(user=instance)
 
 
 # reset password

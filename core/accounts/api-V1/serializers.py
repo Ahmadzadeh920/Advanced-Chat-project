@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from ..models import CustomUser
+from ..models import CustomUser, Profile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
@@ -130,4 +130,15 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         return instance
 
     # class custimized TOKEN_OBTAIN_SERIALIZER
+
+
+
+# this class for profile
+class Profile_Serializer(serializers.ModelSerializer):
+    email = serializers.CharField(source="user.email", )
+
+    class Meta:
+        model = Profile
+        fields = ["email", "role","name" , "last_name", "profile_picture"]
+        read_only_fields =['email']
 

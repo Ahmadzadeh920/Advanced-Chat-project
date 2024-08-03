@@ -5,4 +5,5 @@ app_name = "accounts"
 
 urlpatterns = [
     path("api/v1/", include("accounts.api-V1.urls")),
+    path("", include("django.contrib.auth.urls")),
 ]
