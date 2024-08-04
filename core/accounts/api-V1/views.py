@@ -7,7 +7,7 @@ from .serializers import (RegistrationSerializer,
                            ResetPasswordRequestSerializer,
                            ResetPasswordSerializer,
                            ChangePasswordSerializer,
-                           Profile_Serializer)
+                           ProfileSerializer)
 from ..models import CustomUser, PasswordReset, Profile
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.authtoken.models import Token
@@ -217,15 +217,13 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
 
 # Update and Retrieve Profile 
-class ProfileAPIView(generics.RetrieveUpdateAPIView):
-    serializer_class = Profile_Serializer
-    query_set = Profile.objects.all()
-    permission_class = [IsAuthenticated, IsVerified]
-    
-    
+class ProfileApiView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+    permission_classes = [IsAuthenticated]
+
     def get_object(self):
-        obj = get_object_or_404(self.query_set, user=self.request.user)
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
         return obj
-    
-    
-   
+

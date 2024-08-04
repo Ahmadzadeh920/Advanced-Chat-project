@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from dotenv import load_dotenv
+from datetime import timedelta
+
 
 import os
 
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
     "accounts",
     "rest_framework",
     "rest_framework.authtoken",
-    #"rest_framework_simplejwt",
+    "rest_framework_simplejwt",
     "mail_templated",
     "drf_yasg",
     "rest_framework_simplejwt.token_blacklist",
@@ -205,3 +207,13 @@ EMAIL_USE_TLS = False
 
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
+
+# JWT settings
+# JWT settings (customize as needed)
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+}

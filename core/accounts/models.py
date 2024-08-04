@@ -77,7 +77,8 @@ class Role(models.Model):
 
 # class profile
 class Profile(models.Model):
-    username = None
+    
+    
     user = models.OneToOneField(CustomUser,related_name="User", on_delete=models.CASCADE)
     name = models.CharField()
     last_name = models.CharField()

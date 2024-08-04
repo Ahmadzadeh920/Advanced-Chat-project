@@ -134,11 +134,19 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
 
 
 # this class for profile
-class Profile_Serializer(serializers.ModelSerializer):
-    email = serializers.CharField(source="user.email", )
+class ProfileSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(source="user.email", read_only=True)
 
     class Meta:
         model = Profile
-        fields = ["email", "role","name" , "last_name", "profile_picture"]
-        read_only_fields =['email']
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "image",
+            "description",
+        )
+        read_only_fields = ["email"]
+
 
