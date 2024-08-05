@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "daphne",
     "django.contrib.staticfiles",
     "accounts",
     "rest_framework",
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     "mail_templated",
     "drf_yasg",
     "rest_framework_simplejwt.token_blacklist",
+    "channels"
    
     
    
@@ -93,6 +95,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "Core.wsgi.application"
+ASGI_APPLICATION = 'Core.asgi.application' 
 
 
 # Database

@@ -53,3 +53,10 @@ Redis
 django-celery-beat # for bothe backend and worker  
 django-redis # for bothe backend and worker  
 
+
+
+# websocket
+channels
+channels["daphne"]
+attrs 
+channels-redis
