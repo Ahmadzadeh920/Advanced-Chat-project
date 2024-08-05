@@ -142,11 +142,21 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "email",
-            "first_name",
+            "name",
             "last_name",
-            "image",
-            "description",
+            "profile_picture",
+            "role",
         )
         read_only_fields = ["email"]
 
+
+
+class Customized_TOKEN_OBTAIN_PAIR_SERIALIZER(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        validated_data = super().validate(attrs)
+        if not self.user.is_verified:
+            raise serializers.ValidationError({"details": "user is not verified"})
+        validated_data["email"] = self.user.email
+        validated_data["user_id"] = self.user.id
+        return validated_data
 

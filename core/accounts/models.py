@@ -82,9 +82,7 @@ class Profile(models.Model):
     user = models.OneToOneField(CustomUser,related_name="User", on_delete=models.CASCADE)
     name = models.CharField()
     last_name = models.CharField()
-    profile_picture = models.ImageField(
-        upload_to="profile_pictures/", blank=True, null=True
-    )
+    profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True)
 
     role = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="roles")
 

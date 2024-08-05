@@ -7,7 +7,9 @@ from .serializers import (RegistrationSerializer,
                            ResetPasswordRequestSerializer,
                            ResetPasswordSerializer,
                            ChangePasswordSerializer,
-                           ProfileSerializer)
+                           ProfileSerializer,
+                           Customized_TOKEN_OBTAIN_PAIR_SERIALIZER
+                           )
 from ..models import CustomUser, PasswordReset, Profile
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework.authtoken.models import Token
@@ -99,7 +101,7 @@ class ActivationAccountJWT(APIView):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
-# this class for login
+# this class for login with token
 
 class ObtainAuthToken_Customized(ObtainAuthToken):
     serializer_class = CustomeAuthTokenSerializer
@@ -117,21 +119,10 @@ class ObtainAuthToken_Customized(ObtainAuthToken):
         return Response({"token": token.key, "user_id": user.id, "email": user.email})
 
 
-# this class for cutomized logout
+# this class for login jwt 
+class CustimizedTokenObtainPairView(TokenObtainPairView):
+    serializer_class = Customized_TOKEN_OBTAIN_PAIR_SERIALIZER
 
-class AuthDiscardedToken(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-
-            return Response(status=status.HTTP_205_RESET_CONTENT)
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        
 
 
 # this class for request reseting password
@@ -215,6 +206,11 @@ class ChangePasswordView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
     permission_classes = (IsAuthenticated, IsVerified)
     serializer_class = ChangePasswordSerializer
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, user=self.request.user)
+        return obj
+    
 
 # Update and Retrieve Profile 
 class ProfileApiView(generics.RetrieveUpdateAPIView):
