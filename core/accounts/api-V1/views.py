@@ -208,15 +208,34 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     def get_object(self):
         queryset = self.get_queryset()
-        obj = get_object_or_404(queryset, user=self.request.user)
+        obj = get_object_or_404(queryset, email=self.request.user)
         return obj
     
+# create Profile
+class CreateProfileApiView(generics.CreateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated, IsVerified]
+   
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        validated_data = serializer.validated_data  # Access validated_data here
+        serializer.save(user=self.request.user)
+        # You can use validated_data as needed
+        headers = self.get_success_headers(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+  
+
+
+
 
 # Update and Retrieve Profile 
 class ProfileApiView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     queryset = Profile.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsVerified]
 
     def get_object(self):
         queryset = self.get_queryset()

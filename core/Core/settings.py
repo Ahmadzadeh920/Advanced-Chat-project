@@ -15,7 +15,8 @@ from decouple import config
 from dotenv import load_dotenv
 from datetime import timedelta
 
-
+from django.core.management.utils import get_random_secret_key
+import datetime
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +29,7 @@ load_dotenv()  # Load environment variables from .env file
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = "django-insecure-xpqqve&6+&#eahqur$btvi_8lzz!@o)cd0#m8(eh$w4zm$njma"
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
@@ -207,4 +208,12 @@ EMAIL_USE_TLS = False
 
 EMAIL_HOST_USER = ""
 EMAIL_HOST_PASSWORD = ""
+
+
+#setting JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    'SIGNING_KEY': SECRET_KEY,
+}
 

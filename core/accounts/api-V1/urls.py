@@ -8,9 +8,6 @@ urlpatterns = [
     ),
    
     # this login with JWT
-   
-
-   
     path('customized-request-reset-pass/',RequestPasswordReset.as_view(), name='customized-request-reset-pass'),
     path("reset/pass/<str:token>/", ResetPassword.as_view(),name="Token_reset_password",),
     path("change_password/", ChangePasswordView.as_view(), name="auth_change_password"),
@@ -22,4 +19,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path( "activate/jwt/<str:token>", ActivationAccountJWT.as_view(), name="activation_account_jwt",),
     path( "profile/", ProfileApiView.as_view(), name="profile_api_view",),
+    path( "create_profile/",CreateProfileApiView.as_view(), name = "profile_create_api_view"),
    ]
