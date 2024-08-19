@@ -7,5 +7,5 @@ COPY ./requirements requirements
 
 
 RUN pip install --upgrade pip
-RUN python3 -m pip install -r requirements/base.txt
+RUN python3 -m pip install -r requirements/dev.txt
 
