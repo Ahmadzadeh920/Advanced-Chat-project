@@ -40,7 +40,7 @@ ALLOWED_HOSTS = os.environ.get("SERVERNAMES").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
-    "jazzmin",
+    #"jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -55,10 +55,8 @@ INSTALLED_APPS = [
     "mail_templated",
     "drf_yasg",
     "rest_framework_simplejwt.token_blacklist",
-    "channels"
-   
-    
-   
+    "channels",
+    "ChatApp",
     
 ]
 
