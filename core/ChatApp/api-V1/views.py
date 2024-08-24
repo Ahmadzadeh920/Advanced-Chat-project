@@ -1,5 +1,5 @@
 from rest_framework import generics
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from ..models import (ChatGroup , GroupMessage)
 from accounts.models import Profile
 from .serializer import (GroupSerializer, MessageSerializer)
@@ -7,7 +7,7 @@ from rest_framework.permissions import (
     IsAuthenticated,
 )
 
-
+from django.shortcuts import render
 from accounts.permissions import IsProfileCompleted
 
 
@@ -29,3 +29,7 @@ class GroupMessagesView(generics.ListCreateAPIView):
         serializer.save(author=author, group=group_obj)
 
     
+
+def room(request):
+    return render(request,'chat/index.html')
+       

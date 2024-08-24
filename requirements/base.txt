@@ -60,3 +60,4 @@ channels
 channels[daphne]
 attrs 
 channels-redis
+django-channels-jwt

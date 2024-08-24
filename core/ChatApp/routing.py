@@ -1,7 +1,11 @@
 from django.urls import path
 from .consumers import *
+from todo.consumer import todo_consumer
 
 websocket_urlpatterns = [
-    path("ws/chatroom/<chatroom_name>", ChatroomConsumer.as_asgi()),
-    #path("ws/online-status/", OnlineStatusConsumer.as_asgi()),
+    path("chatroom/<chatroom_id>", ChatroomConsumer.as_asgi()),
+    path(r'/todo/$', todo_consumer.as_asgi()),
+   
+
+    
 ]
