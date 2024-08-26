@@ -59,5 +59,6 @@ django-redis # for bothe backend and worker
 channels
 channels[daphne]
 attrs 
-channels-redis
-django-channels-jwt
+daphne 
+
+
