@@ -19,6 +19,7 @@ from ChatApp import  routing as routing_chat
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Core.envs.development")
 
+
 #application = get_asgi_application()
 
 application = ProtocolTypeRouter({

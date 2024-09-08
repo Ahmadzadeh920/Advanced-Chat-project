@@ -32,7 +32,13 @@ class MessageSerializer(serializers.ModelSerializer):
  # define serializer for groups in chat   
 
 class GroupSerializer(serializers.ModelSerializer):   
+    relative_url = serializers.URLField(source="get_absolute_api_url", read_only=True)
+    def get_abs_url(self, obj):
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.id)
     
+
+    absolute_url = serializers.SerializerMethodField(method_name="get_abs_url")
     class Meta:
         model = ChatGroup
-        fields = ['id', 'name']  # 'id' is included by default 
+        fields = [ 'group_name', "relative_url","absolute_url"]  # 'id' is included by default 

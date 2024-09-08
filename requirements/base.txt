@@ -60,5 +60,6 @@ channels
 channels[daphne]
 attrs 
 daphne 
+channels_redis
 
 

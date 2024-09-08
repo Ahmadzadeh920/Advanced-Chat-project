@@ -1,5 +1,8 @@
 from django.db import models
+from django.urls import reverse
 from accounts.models import Profile , CustomUser
+
+
 # Create your models here.
 
 class ChatGroup(models.Model):
@@ -7,6 +10,9 @@ class ChatGroup(models.Model):
 
     def __str__(self):
         return self.group_name
+    
+    def get_absolute_api_url(self):
+        return reverse("ChatApp:api-v1:group-messages-retrieve", kwargs={"pk": self.id})
     
 
 class GroupMessage(models.Model):

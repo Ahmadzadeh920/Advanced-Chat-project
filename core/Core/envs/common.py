@@ -20,8 +20,10 @@ import datetime
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()  # Load environment variables from .env file
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -40,7 +42,7 @@ ALLOWED_HOSTS = os.environ.get("SERVERNAMES").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
-    #"jazzmin",
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -78,10 +80,11 @@ ROOT_URLCONF = "Core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [
-            BASE_DIR / "templates",
+        'DIRS': [
+            # Add your custom template directories here
+            os.path.join(BASE_DIR, 'templates'),  # Add your desired template directory here
         ],
-
+        "APP_DIRS": True,
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -213,8 +216,11 @@ SIMPLE_JWT = {
 # Channel layer
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels.layers.InMemoryChannelLayer'
-    }
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [("redis", 6379)],  # Adjust the host and port based on your Redis setup
+        },
+    },
 }
 
 

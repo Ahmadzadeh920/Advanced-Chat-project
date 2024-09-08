@@ -43,30 +43,46 @@ class ChatroomConsumer(WebsocketConsumer):
         self.chatroom_id = self.scope['url_route']['kwargs']['chatroom_id']
         self.chatroom_obj = get_object_or_404(ChatGroup, id =self.chatroom_id) 
         self.chatroom_name= self.chatroom_obj.group_name
+        # group_add allows channel to receive messages sent to the group
         async_to_sync(self.channel_layer.group_add)(
-            self.chatroom_name, self.channel_name
+            self.chatroom_id, self.channel_name
         )
         self.accept()
 
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
-            self.chatroom_name, self.channel_name
+            self.chatroom_id, self.channel_name
         )
 
 
     def receive(self, text_data=None, bytes_data=None):
         
         Prfile_obj = Profile.objects.get(user = self.user)
-        message = GroupMessage.objects.create(body= text_data , author = Prfile_obj, group = self.chatroom_obj)
-        context = json.dumps({
-            'message' : text_data,
-            'user' : self.user
+        message_obj = GroupMessage.objects.create(body= text_data , author = Prfile_obj, group = self.chatroom_obj)
+        message = json.dumps({
+            'text' : text_data,
+            'user' : Prfile_obj.name,
         })
-    
-        self.send(text_data=context)
+
+        event = {
+            'type': 'message_handler',
+            'message_id': message_obj.id,
+        }
         async_to_sync(self.channel_layer.group_send)(
             self.chatroom_name, event
         )
+        
+    def message_handler(self, event):
+        message_id = event['message_id']
+        message = GroupMessage.objects.get(id=message_id)
+        context = {
+            'message': message,
+            'user': self.user,
+            'chat_group': chatroom_obj
+        }
+        
+        self.send(text_data=context)
+
 
 

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import GroupMessagesView, room
-
+from . import views
+app_name = "api-v1"
 urlpatterns = [
-    path('messages/<int:pk>/', GroupMessagesView.as_view(), name='group-messages-retrieve'),
-    path('index/', room, name='index_page_render'),
+    path('group/<int:pk>', views.GroupMessagesView.as_view(), name='group-messages-retrieve'),
+    
+     path('group/', views.GroupListCreateView.as_view(), name='group-list-create'),
 ]
