@@ -9,4 +9,8 @@ from accounts.permissions import IsProfileCompleted
 
 def index(request):
     return render(request,'ChatApp/index.html')
+
+
+def panel(request):
+    return render(request,'ChatApp/panel.html')
        
