@@ -13,6 +13,7 @@ from accounts.permissions import IsProfileCompleted
 from rest_framework.views import APIView
 
 
+
 #retirive all messages related to one group 
 class GroupMessagesView(generics.ListCreateAPIView):
     serializer_class = MessageSerializer
@@ -39,6 +40,7 @@ class GroupListCreateView(generics.ListCreateAPIView):
 
 # render index html 
 class IndexView(APIView):
+    permission_classes = IsAuthenticated, 
     def get(self, request):
         context = {
             'name': 'World',  # You can pass any context data you need
@@ -53,4 +55,4 @@ class loginView(APIView):
         context = {
             'name': 'World',  # You can pass any context data you need
         }
-        return render(request, 'ChatApp/login.html', context)
+        return render(request, 'ChatApp/login.html', context=context)

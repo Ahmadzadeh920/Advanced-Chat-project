@@ -7,13 +7,6 @@ from django.shortcuts import render
 from accounts.permissions import IsProfileCompleted
 
 
-def index(request):
-    return render(request,'ChatApp/index.html')
-
-
-
-def login(request):
-    return render(request,'ChatApp/login.html')
 
 
 
