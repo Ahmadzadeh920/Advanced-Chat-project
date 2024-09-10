@@ -122,6 +122,7 @@ class ObtainAuthToken_Customized(ObtainAuthToken):
 # this class for login jwt 
 class CustimizedTokenObtainPairView(TokenObtainPairView):
     serializer_class = Customized_TOKEN_OBTAIN_PAIR_SERIALIZER
+    
 
 
 

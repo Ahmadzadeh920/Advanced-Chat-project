@@ -10,7 +10,7 @@ from rest_framework.permissions import (
 
 from django.shortcuts import render
 from accounts.permissions import IsProfileCompleted
-
+from rest_framework.views import APIView
 
 
 #retirive all messages related to one group 
@@ -36,3 +36,21 @@ class GroupListCreateView(generics.ListCreateAPIView):
     serializer_class = GroupSerializer
     
 
+
+# render index html 
+class IndexView(APIView):
+    def get(self, request):
+        context = {
+            'name': 'World',  # You can pass any context data you need
+        }
+        return render(request, 'ChatApp/index.html', context)
+    
+
+
+# render index html 
+class loginView(APIView):
+    def get(self, request):
+        context = {
+            'name': 'World',  # You can pass any context data you need
+        }
+        return render(request, 'ChatApp/login.html', context)

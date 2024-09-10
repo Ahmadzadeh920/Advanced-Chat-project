@@ -11,6 +11,10 @@ def index(request):
     return render(request,'ChatApp/index.html')
 
 
-def panel(request):
-    return render(request,'ChatApp/panel.html')
+
+def login(request):
+    return render(request,'ChatApp/login.html')
+
+
+
        
