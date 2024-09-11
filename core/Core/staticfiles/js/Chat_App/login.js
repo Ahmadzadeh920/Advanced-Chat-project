@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     const form = $('#login-form');
   
@@ -23,6 +22,26 @@ $(document).ready(function() {
                 localStorage.setItem('refresh', data.refresh);
                 localStorage.setItem('user_id', data.user_id);
                 localStorage.setItem('email', data.email);
+                
+                $.ajax({
+
+                    headers: {
+                        'Authorization': `Bearer ${window.localStorage.getItem('access')}`
+                    },
+                    type: "GET",
+                    tokenFlag: true,
+                    success: function (response) {
+                         // Check if you are authenticated successfully
+                        if (response.authenticated) {
+                        // Redirect upon successful authentication
+                        window.location.href = '../'; // Replace with your target page URL
+                    } else {
+                        // Handle authentication failure
+                        alert(response);
+        }
+                    },
+                   
+                }); // end ajax
  
             },
             error: function(xhr) {
