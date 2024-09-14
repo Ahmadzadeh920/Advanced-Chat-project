@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "channels",
     "ChatApp",
+    "corsheaders",
     
 ]
 
@@ -66,6 +67,7 @@ MIDDLEWARE = [
     
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -227,5 +229,9 @@ CHANNEL_LAYERS = {
     },
 }
 
+# this for setting django-cors-headers library to control request beyond of this server
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS").split(" ")
 
+
+LOGIN_URL = os.environ.get("LOGIN_URL")  # This should match the path defined in your urls.py
 

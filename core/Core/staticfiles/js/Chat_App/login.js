@@ -1,53 +1,50 @@
-$(document).ready(function() {
-    const form = $('#login-form');
-  
-    
-    form.on('submit', function(event) {
-        event.preventDefault();
+$("#login-form").submit(function (event) {
+    event.preventDefault();
+    let formData = new FormData();
+    formData.append('email', $('#email').val().trim());
+    formData.append('password', $('#password').val().trim());
 
-        const username = $('#email').val();
-        const password = $('#password').val();
-
-        $.ajax({
-            url: 'http://127.0.0.1:8000/accounts/api/v1/login_customized/', // Update the URL if needed
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                email: username,
-                password: password
-            }),
-            success: function(data) {
-                // Successfully received the token
-                localStorage.setItem('access', data.access);
-                localStorage.setItem('refresh', data.refresh);
-                localStorage.setItem('user_id', data.user_id);
-                localStorage.setItem('email', data.email);
-                
-                $.ajax({
-
-                    headers: {
-                        'Authorization': `Bearer ${window.localStorage.getItem('access')}`
-                    },
-                    type: "GET",
-                    tokenFlag: true,
-                    success: function (response) {
-                         // Check if you are authenticated successfully
-                        if (response.authenticated) {
-                        // Redirect upon successful authentication
-                        window.location.href = '../'; // Replace with your target page URL
-                    } else {
-                        // Handle authentication failure
-                        alert(response);
-        }
-                    },
-                   
-                }); // end ajax
- 
-            },
-            error: function(xhr) {
-                const data = xhr.responseJSON;
-                alert('Login failed: ' + data.detail);
+    $.ajax({
+        url: "http://127.0.0.1:8000/accounts/api/v1/login_customized/",
+        type: "POST",
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            // store tokens in localStorage
+            if (data['access'] !== null){
+            window.localStorage.setItem('refreshToken', data['refresh']);
+            window.localStorage.setItem('accessToken', data['access']);
+            window.localStorage.setItem('user_id', data['user_id']);
+            window.localStorage.setItem('email', data['email']);
+            if (window.localStorage.getItem('user_id') !== null) {
+                window.location.href ='../'
+                // You can also add any additional logic here
+            } else {
+                alert('User with this credential is not exist')
             }
-        });
-    });
+       
+        }
+        else{
+            alert('access token is null ')
+        }
+        },
+        error: function (rs, e) {
+            console.error(rs.status);
+           alert(rs.responseText);
+        }
+    }); // end ajax
+});
+
+
+$("#logout-link").click(function (event) {
+    event.preventDefault();
+    window.localStorage.removeItem('refreshToken');
+    window.localStorage.removeItem('accessToken');
+    window.localStorage.removeItem('user_id');
+    window.localStorage.removeItem('email');
+    
+    window.location.href = "login/";
+
 });
