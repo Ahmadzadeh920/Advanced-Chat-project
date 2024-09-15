@@ -35,7 +35,8 @@
       <polygon style="stroke: rgb(0,0,0); stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke" points="-50,-50 -50,50 50,50 50,-50 "></polygon>
     </g>
   </svg>
-  <form id="login-form">
+  <form id="login-form" method="post">
+    {% csrf_token %}
   <div class="email">
     <label for="email">Email Address</label>
     <div class="sec-2">
@@ -48,7 +49,7 @@
     <div class="sec-2">
       <ion-icon name="lock-closed-outline"></ion-icon>
       <input id="password" class="pas" type="password" name="password" placeholder="············"/>
-      
+
     </div>
   </div>
   <button type="submit" class="login" style="margin: 20px; display: inline-block">Login </button>

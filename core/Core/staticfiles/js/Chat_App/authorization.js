@@ -11,6 +11,8 @@ $(document).ready(function () {
         tokenFlag: true,
         success: function (data) {
             console.log('try to');
+          
+
         },
         error: handleAjaxError
     }); // end ajax

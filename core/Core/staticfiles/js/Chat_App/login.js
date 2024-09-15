@@ -1,3 +1,5 @@
+
+
 $("#login-form").submit(function (event) {
     event.preventDefault();
     let formData = new FormData();
@@ -18,16 +20,7 @@ $("#login-form").submit(function (event) {
             window.localStorage.setItem('accessToken', data['access']);
             window.localStorage.setItem('user_id', data['user_id']);
             window.localStorage.setItem('email', data['email']);
-            if (window.localStorage.getItem('user_id') !== null) {
-                window.location.href ='../'
-                // You can also add any additional logic here
-            } else {
-                alert('User with this credential is not exist')
-            }
-       
-        }
-        else{
-            alert('access token is null ')
+           
         }
         },
         error: function (rs, e) {
