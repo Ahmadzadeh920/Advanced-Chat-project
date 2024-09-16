@@ -20,6 +20,26 @@ $("#login-form").submit(function (event) {
             window.localStorage.setItem('accessToken', data['access']);
             window.localStorage.setItem('user_id', data['user_id']);
             window.localStorage.setItem('email', data['email']);
+            $.ajax({
+                url: 'http://127.0.0.1:8000/chat/api/v1/', // Replace with your protected API endpoint
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
+                },
+                success: function(response) {
+                    console.log('Protected data:', response);
+                },
+                error: function(error) {
+                    console.error('Error fetching protected data:', error);
+                    if (error.status === 401) {
+                        // Handle unauthorized access (redirect to login)
+                        //window.location.href = 'http://127.0.0.1:8000/chat/api/v1/';
+                        console.log('Unauthorized User')
+                    }
+                }
+            });    
+
+
            
         }
         },
