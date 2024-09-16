@@ -41,15 +41,20 @@ class GroupListCreateView(generics.ListCreateAPIView):
     
 
 
+
+class IndexView(TemplateView):
+    template_name = 'ChatApp/index.html'
+    login_url = '/login/'
+
 # render index html 
 
-class IndexView(LoginRequiredMixin, TemplateView):
-    template_name = 'ChatApp/index.html'
+'''class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = 'ChatApp/index.html' '''
     
     
     
     
-class loginView(LoginRequiredMixin, TemplateView):
+class loginView(TemplateView):
     template_name = 'ChatApp/login.html'   
 
 

@@ -27,7 +27,9 @@ $("#login-form").submit(function (event) {
                     'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`
                 },
                 success: function(response) {
-                    console.log('Protected data:', response);
+
+                    window.location.replace("http://127.0.0.1:8000/chat/api/v1/");
+
                 },
                 error: function(error) {
                     console.error('Error fetching protected data:', error);
