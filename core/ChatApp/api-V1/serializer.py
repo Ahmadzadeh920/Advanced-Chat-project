@@ -41,7 +41,7 @@ class GroupSerializer(serializers.ModelSerializer):
     absolute_url = serializers.SerializerMethodField(method_name="get_abs_url")
     class Meta:
         model = ChatGroup
-        fields = [ 'group_name', "relative_url","absolute_url", "img_group" , "created_at"]  # 'id' is included by default 
+        fields = [ 'name', "relative_url","absolute_url", "img_group"]  # 'id' is included by default 
 
 
 

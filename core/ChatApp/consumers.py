@@ -1,88 +1,115 @@
+# consumers.py
 
-from channels.generic.websocket import WebsocketConsumer
-from click import group
-from .models import ChatGroup , GroupMessage
-from django.shortcuts import get_object_or_404
 import json
-from asgiref.sync import async_to_sync
 import jwt 
+from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync
+from .models import ChatGroup, GroupMember, GroupMessage
+from django.contrib.auth.models import User
+from channels.auth import login
 import Core.envs.common as settings
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+
 from accounts.models import CustomUser , Profile
 
-
-
-# this method analyze scope and return user object 
-def get_user_scope(scope):
-    headers = scope['headers']
-    Authorization_header = None
-    # for finiding Authorization header
-    for key, value in headers:
-        if key == b'authorization':
-            Authorization_header = value
-            break
-    access_token = Authorization_header.decode('utf-8').split( )[1]
-    try:
-        # Decode the JWT token
-        payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
-        user_id = payload.get('user_id')  # Assuming user_id is stored in the token
-        user_obj = CustomUser.objects.get(id=user_id)
-            
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Token has expired')
-    except jwt.DecodeError:
-        raise AuthenticationFailed('Error decoding token')
-    except User.DoesNotExist:
-        raise AuthenticationFailed('No such user')
-    return(user_obj)
-
-
-
-class ChatroomConsumer(WebsocketConsumer):
+class ChatGroupConsumer(WebsocketConsumer):
     def connect(self):
-        self.user = get_user_scope(self.scope)
-        self.chatroom_id = self.scope['url_route']['kwargs']['chatroom_id']
-        self.chatroom_obj = get_object_or_404(ChatGroup, id =self.chatroom_id) 
-        self.chatroom_name= self.chatroom_obj.group_name
-        # group_add allows channel to receive messages sent to the group
-        async_to_sync(self.channel_layer.group_add)(
-            self.chatroom_id, self.channel_name
-        )
-        self.accept()
+        # Get the JWT token from the URL parameters or headers
+        self.user = self.get_user_from_jwt(self.scope)
 
+        # Get the group name from URL
+        self.group_name = self.scope['url_route']['kwargs']['group_name']
+
+        # Check if the user is a member of the group
+        if self.is_member(self.user, self.group_name):
+            self.room_group_name = f'{self.group_name}'
+
+            # Join room group
+            async_to_sync(self.channel_layer.group_add)(
+                self.room_group_name,
+                self.channel_name
+            )
+
+            self.accept()
+        else:
+            self.close()  # User is not a member of the group, close connection
 
     def disconnect(self, close_code):
+        # Leave room group
         async_to_sync(self.channel_layer.group_discard)(
-            self.chatroom_id, self.channel_name
+            self.room_group_name,
+            self.channel_name
         )
 
+    def receive(self, text_data):
+        # Receive message from WebSocket
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
 
-    def receive(self, text_data=None, bytes_data=None):
-        
-        Prfile_obj = Profile.objects.get(user = self.user)
-        message_obj = GroupMessage.objects.create(body= text_data , author = Prfile_obj, group = self.chatroom_obj)
-        message = json.dumps({
-            'text' : text_data,
-            'user' : Prfile_obj.name,
-        })
+        # Save the message to the database
+        group = ChatGroup.objects.get(group_name=self.group_name)
+        GroupMessage.objects.create(
+            group=group,
+            author=self.user.profile,
+            body=message
+        )
 
-        event = {
-            'type': 'message_handler',
-            'message_id': message_obj.id,
-        }
+        # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
-            self.chatroom_name, event
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message
+            }
         )
+
+
+
+    def chat_message(self, event):
+        # Receive message from room group
+        message = event['message']
+
+        # Send message to WebSocket
+        self.send(text_data=json.dumps({
+            'message': message
+        }))
+
+    def get_user_from_jwt(self, scope):
+        headers = scope['headers']
+        Authorization_header = None
+        # for finiding Authorization header
+        for key, value in headers:
+            if key == b'authorization':
+                Authorization_header = value
+                break
+        print('scope is')
+        print(scope['headers'])
+        access_token = Authorization_header.decode('utf-8').split( )[1]
+        try:
+            # Decode the JWT token
+            payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get('user_id')  # Assuming user_id is stored in the token
+            user_obj = CustomUser.objects.get(id=user_id)
+                
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.DecodeError:
+            raise AuthenticationFailed('Error decoding token')
+        except User.DoesNotExist:
+            raise AuthenticationFailed('No such user')
         
-    def message_handler(self, event):
-        message_id = event['message_id']
-        message = GroupMessage.objects.get(id=message_id)
-        context = {
-            'message': message,
-            'user': self.user,
-            'chat_group': chatroom_obj
-        }
-        
-        self.send(text_data=context)
+        return user_obj
 
-
-
+    
+    
+    
+    
+    
+    
+    def is_member(self, user, group_name):
+        try:
+            group = ChatGroup.objects.get(name=group_name)
+            return GroupMember.objects.filter(group=group, user=user).exists()
+        except ChatGroup.DoesNotExist:
+            return False
