@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import ChatGroup , GroupMessage
+from ..models import ChatGroup , GroupMessage , GroupMember
 from accounts.models import Profile
 
 
@@ -41,4 +41,14 @@ class GroupSerializer(serializers.ModelSerializer):
     absolute_url = serializers.SerializerMethodField(method_name="get_abs_url")
     class Meta:
         model = ChatGroup
-        fields = [ 'group_name', "relative_url","absolute_url"]  # 'id' is included by default 
+        fields = [ 'group_name', "relative_url","absolute_url", "img_group" , "created_at"]  # 'id' is included by default 
+
+
+
+# this serializer for Group memeber models
+
+class ChatGroupSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()  # This will embed group information
+    class Meta:
+        model = GroupMember
+        fields =['id', 'group', 'user']  # Specify fields you want to serialize

@@ -1,9 +1,11 @@
+from urllib import request
+from click import group
 from rest_framework import generics
 from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
-from ..models import (ChatGroup , GroupMessage)
+from ..models import (ChatGroup , GroupMessage , GroupMember)
 from accounts.models import Profile
-from .serializer import (GroupSerializer, MessageSerializer )
+from .serializer import (GroupSerializer, MessageSerializer , ChatGroupSerializer )
 from rest_framework.permissions import (
     IsAuthenticated,
 )
@@ -63,3 +65,16 @@ class loginView(TemplateView):
     template_name = 'ChatApp/login.html'
     success_url = reverse_lazy('home')  # Redirect to home after login
     '''
+
+
+# for listing all groups which request.user is member of these 
+
+class UserGroupsListView(generics.ListAPIView):
+    serializer_class = ChatGroupSerializer
+    
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+    
+        group_obj = GroupMember.objects.filter(user = self.request.user)
+        return group_obj      
