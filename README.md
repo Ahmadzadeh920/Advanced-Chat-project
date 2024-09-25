@@ -90,21 +90,26 @@ services:
   db:
       image: postgres:latest
       container_name: POSTGRES_DB
+      
       environment:
-        POSTGRES_DB: Customized-Blog-db
-        POSTGRES_USER: admin_db
-        POSTGRES_PASSWORD: as@123456
+        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
       volumes:
         - ./data/db:/var/lib/postgresql/data/
+      
+      ports:
+        - "5432:5432"
 
   backend:
       build: .
       container_name: backend
-      command: python manage.py runserver 0.0.0.0:8000
+      command: python manage.py runserver 0.0.0.0:8000 
       volumes:
         - ./core:/app
       ports:
         - "8000:8000"
+      
       depends_on:
         - redis
         - db
@@ -118,7 +123,9 @@ services:
       depends_on:
         - redis
         - backend
-      
+      environment:
+      - DJANGO_SETTINGS_MODULE=Core.envs.development
+
 
   smtp4dev:
       image: rnwood/smtp4dev:v3
@@ -137,109 +144,27 @@ services:
         - ServerOptions__HostName=smtp4dev
 
 
-  master:
-    image: locustio/locust
+
+
+  pgadmin:
+    container_name: container-pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - db
     ports:
-     - "8089:8089"
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H http://backend:8000
-
-  worker_locust:
-    image: locustio/locust
-    volumes:
-      - ./core/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --worker --master-host master
-
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    restart: unless-stopped
 
 volumes:
   smtp4dev-data:
-
+  
 
 
 ```
 
-enviroment varibales are included in docker-compose-stage.yml file for deploying mode and you are free to change commands inside:
-
-```yaml
-version: "3.9"
-services:
-  redis:
-    container_name: redis
-    image: redis
-    restart: always
-    ports:
-      - "6379:6379"
-    command: redis-server --save 60 1 --loglevel warning
-  
-
-  
-
-  backend:
-    build: .
-    container_name: backend
-    
-  
-    volumes:
-      - ./core:/app
-      - static_volume:/app/static
-      - media_volume:/app/media
-
-    expose:
-      - "8000"
-    environment:
-      - SECRET_KEY:${SECRET_KEY}
-    depends_on:
-      - redis
-   
-    command: gunicorn Core.wsgi --bind 0.0.0.0:8000
-     #command: python manage.py runserver 0.0.0.0:8000
-    networks:
-      - default
-
-  
-  worker:
-      build: .
-      command: celery -A Core worker --loglevel=info
-      volumes:
-        - ./core:/app
-      depends_on:
-        - redis
-        - backend
-      
-
-
-
-
-  nginx:
-    image: nginx
-    container_name: nginx
-    restart: always
-    ports: 
-      - "80:80"
-    volumes:
-      - ./default.conf:/etc/nginx/conf.d/default.conf
-      #app since in Dockerfile workdie is /app
-      - static_volume:/home/app/static
-      - media_volume:/home/app/media
-    depends_on:
-      - redis
-      - backend
-
-# this is introduced common volume
-volumes:
-  static_volume:
-  media_volume:
-
-
-
-networks:
-  default:
-    driver: bridge
-
-
-
-```
 
 ## Build everything
 
@@ -250,11 +175,7 @@ going to download a few Docker images and build the Python + requirements depend
 ```bash
 docker-compose up --build
 ```
-and for docker-compose-stage, you'll need to run the following:
 
-```bash
-docker-compose -f docker-compose-stage.yml  up --build
-```
 
 Now that everything is built and running we can treat it like any other Django
 app.
