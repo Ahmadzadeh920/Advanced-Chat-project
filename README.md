@@ -30,10 +30,7 @@ This project includes:
 - Create Template and send request to API via Ajax
 - Postgresql as database management system
 - Reformat and Lint (flake8,black)
-- Populate Database with Faker and Django Commands
-- Cores Headers
-- Background process with  redis
-- Cacheing with redis
+
 
 
 
