@@ -73,12 +73,13 @@ $.ajax({
 
             var title = $('<h4>', {
                 class: "mb-0 mt-1",
-                html: group.group_name + '<span class="badge badge-success"></span>'
+                html: '<span>'+group.name+'</span>'
             });
 
             var jobDescription = $('<p>', {
                 class: "mb-0 text-xs font-weight-normal text-muted",
-                text: group.created_at
+                
+                html: '<span class="badge badge-success">'+ group.created_at+'</span>',
             });
 
             // Assemble the elements

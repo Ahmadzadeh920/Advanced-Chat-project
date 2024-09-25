@@ -92,7 +92,20 @@ class ChatGroupConsumer(WebsocketConsumer):
                 Authorization_header = value
                 break
         
-        access_token = Authorization_header.decode('utf-8').split( )[1]
+        # Check if the Authorization_header is not None
+        if Authorization_header is not None:
+            # Decode the header and split to get the access token
+            access_token = Authorization_header.decode('utf-8').split()[1] 
+        else:
+            # Handle the case where Authorization_header is None
+            # Assuming you're trying to get the token from query string
+            query_string = self.scope.get('query_string', b'').decode('utf-8')
+            
+            # Make sure to check if there is a 'token=' in the query string
+            if 'token=' in query_string:
+                access_token = query_string.split('token=')[1]
+            else:
+                access_token = None  # or handle the case where no token is found
         try:
             # Decode the JWT token
             payload = jwt.decode(access_token, settings.SECRET_KEY, algorithms=["HS256"])

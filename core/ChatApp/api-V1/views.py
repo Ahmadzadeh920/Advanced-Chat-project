@@ -25,8 +25,12 @@ class GroupMessagesView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated, IsProfileCompleted]
     def get_queryset(self):
         # Override to retrieve only the messages for the specified group
-        group_id = self.kwargs['pk']
-        queryset = GroupMessage.objects.filter(group_id =group_id).all()
+        if 'name_group' in self.kwargs and self.kwargs['name_group'] is not None:
+            group_name = self.kwargs['name_group']
+            
+            queryset = GroupMessage.objects.filter(group__name =group_name).all()
+        else:
+            queryset = {}
         return queryset
 
     def perform_create(self, serializer):
@@ -36,45 +40,39 @@ class GroupMessagesView(generics.ListCreateAPIView):
         serializer.save(author=author, group=group_obj)
 
     
-
+# List all Grpups
 class GroupListCreateView(generics.ListCreateAPIView):
     queryset = ChatGroup.objects.all()
     serializer_class = GroupSerializer
     
 
 
-
+# render iNDEX Page
 class IndexView(TemplateView):
     template_name = 'ChatApp/index.html'
     login_url = '/login/'
 
 # render index html 
-
-'''class IndexView(LoginRequiredMixin, TemplateView):
-    template_name = 'ChatApp/index.html' '''
-    
-    
-    
     
 class loginView(TemplateView):
     template_name = 'ChatApp/login.html'   
 
 
-# render login html 
-'''class loginView(LoginView):
-    template_name = 'ChatApp/login.html'
-    success_url = reverse_lazy('home')  # Redirect to home after login
-    '''
+
 
 
 # for listing all groups which request.user is member of these 
 
 class UserGroupsListView(generics.ListAPIView):
     serializer_class = ChatGroupSerializer
-    
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
     
         group_obj = GroupMember.objects.filter(user = self.request.user)
         return group_obj      
+    
+
+
+
+

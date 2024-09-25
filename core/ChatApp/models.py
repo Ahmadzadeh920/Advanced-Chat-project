@@ -16,7 +16,7 @@ class ChatGroup(models.Model):
     
     
     def get_absolute_api_url(self):
-        return reverse("ChatApp:api-v1:group-messages-retrieve", kwargs={"pk": self.id})
+        return reverse("ChatApp:api-v1:group-messages-retrieve", kwargs={"name_group": self.name})
     
     
 # this models for detecting User is belonged to which groups

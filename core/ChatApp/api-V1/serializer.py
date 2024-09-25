@@ -3,9 +3,13 @@ from ..models import ChatGroup , GroupMessage , GroupMember
 from accounts.models import Profile
 
 
+
+# this class fro serializer massage
+
 class MessageSerializer(serializers.ModelSerializer):
     email_author = serializers.CharField(source="author.user.email", read_only=True)
     is_author = serializers.SerializerMethodField()
+    group_name = serializers.CharField(source="group.name", read_only=True)
     
     # this function recognize the which one of message is belonged to requset.user   
     def get_is_author(self, attrs):
@@ -14,7 +18,7 @@ class MessageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = GroupMessage
-        fields = ['body','email_author', 'created','is_author' ]
+        fields = ['body','email_author', 'created','is_author','group_name' ]
         extra_kwargs = {
             'group': {'required': True}  # Ensure this field is required
         }
