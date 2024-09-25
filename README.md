@@ -18,7 +18,7 @@
 
 
 # Introduction
- The main goal of this project is to show you how we can use django rest api and websocket to create a advanced chat app with customized authentications(JWT and Token) and all base needs.
+ The main goal of this project is to show you how we can use django rest api and websocket to create a advanced chat app with customized authentications(JWT) and all base needs.
 This project includes:
 - Setting up project with Docker (dockerfile/docker-compose)
 - Setup Django Model for a Chat and AbstractBaseUser
@@ -26,15 +26,15 @@ This project includes:
 - ClassBasedViews in RestFramework (views,generic,viewset)
 - Api Documentation with swagger and redoc
 - Authentication API (JWT)
+- Websocket consumer
+- Create Template and send request to API via Ajax
+- Postgresql as database management system
 - Reformat and Lint (flake8,black)
-- Django TestCase and PyTest
-- Django CI with github actions
 - Populate Database with Faker and Django Commands
 - Cores Headers
-- Load Testing with Locust
-- Background process with celery and redis
+- Background process with  redis
 - Cacheing with redis
-- Get ready for deploy (gunicorn/nginx)
+
 
 
 # Features
@@ -70,7 +70,7 @@ these commands for PowerShell if you want.
 ## Clone the repo
 Clone this repo anywhere you want and move into the directory:
 ```bash
-git clone https://github.com/Ahmadzadeh920/Blog-Customized.git
+git clone https://github.com/Ahmadzadeh920/Advanced-Chat-project.git
 ```
 
 ## Enviroment Varibales
