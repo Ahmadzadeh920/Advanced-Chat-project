@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Replace with your actual JWT token
+    // actual JWT token
     let jwtToken = window.localStorage.getItem('accessToken'); 
 
     let roomName = 'public4'; // The room_name you want to connect to
