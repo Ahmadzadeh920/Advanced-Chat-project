@@ -42,23 +42,21 @@ class ChatroomConsumer(WebsocketConsumer):
     async def connect(self):
     
         self.chatroom_name = self.scope['url_route']['kwargs']['chatroom_name']
-        '''
+    
         self.chatroom_obj = get_object_or_404(ChatGroup, name =self.chatroom_name) 
         self.user = get_user_scope(self.scope , obj_chat = self.chatroom_obj)
         
-        
-       
         self.chatroom_id = self.chatroom_obj.id
         # group_add allows channel to receive messages sent to the group
         async_to_sync(self.channel_layer.group_add)(
             self.chatroom_id, self.channel_name
-        )'''
+        )
         await self.accept()
 
     def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        self.accept()
+       
 
 
         '''

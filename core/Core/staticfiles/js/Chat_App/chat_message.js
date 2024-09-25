@@ -1,41 +1,28 @@
-// Example using jQuery
-$(document).ready(function () {
-    const group_name = "public4";  // replace with your group name
-    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws"; // Use wss on HTTPS
-    const token = localStorage.getItem('accessToken'); // Retrieve your JWT token from storage
-    const wsUrl = 'ws://localhost:8000/ws/chat/'+group_name+'/'; // Replace with your actual WebSocket URL
+$(document).ready(function() {
+    // Replace with your actual JWT token
+    let jwtToken = window.localStorage.getItem('accessToken'); 
+    let ws = `ws://localhost:8000/ws/chat/public4/?token=${encodeURIComponent(jwtToken)}`;
     
-    // Initialize WebSocket connection
-    const socket = new WebSocket(wsUrl, [], {
-        headers: {
-            'Authorization': `Bearer ${token}` // Attach the token
-        }
-    });
-
-
-
-
-
-    // Set up event handlers
-        socket.onopen = function(event) {
-            
-            console.log("WebSocket is open now.");
-        };
-
-
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-        console.log(data.message);  // handle incoming message
+    // Connection opened
+    ws.onopen = function() {
+        console.log('WebSocket connection established');
+        // Send a message to the server
+        ws.send(JSON.stringify({ type: 'message', data: 'Hello Server!' }));
     };
 
-    $('#send-message-btn').on('click', function () {
-        const message = $('#message-input').val();
+    // Listen for messages
+    ws.onmessage = function(event) {
+        let response = JSON.parse(event.data);
+        console.log('Message from server:', response);
+    };
 
-        if (message) {
-            socket.send(JSON.stringify({
-                'message': message
-            }));
-            $('#message-input').val('');  // Clear input
-        }
-    });
+    // Handle errors
+    ws.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+
+    // Connection closed
+    ws.onclose = function(event) {
+        console.log('WebSocket connection closed:', event);
+    };
 });

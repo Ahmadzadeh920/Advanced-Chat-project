@@ -1,5 +1,6 @@
 # consumers.py
 
+from email import message
 import json
 import jwt 
 from channels.generic.websocket import WebsocketConsumer
@@ -10,8 +11,11 @@ from channels.auth import login
 import Core.envs.common as settings
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
+from accounts.models import Profile, CustomUser
 
-from accounts.models import CustomUser , Profile
+
+
+
 
 class ChatGroupConsumer(WebsocketConsumer):
     def connect(self):
@@ -43,18 +47,22 @@ class ChatGroupConsumer(WebsocketConsumer):
         )
 
     def receive(self, text_data):
+        
+        profile_obj = Profile.objects.get(user = self.user)
         # Receive message from WebSocket
-        text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-
+        #text_data_json = json.loads(text_data)
+        
+        # text data is string
+        message = text_data
         # Save the message to the database
-        group = ChatGroup.objects.get(group_name=self.group_name)
+        group_obj = ChatGroup.objects.get(name=self.group_name)
         GroupMessage.objects.create(
-            group=group,
-            author=self.user.profile,
+            group=group_obj,
+            author=profile_obj,
             body=message
         )
 
+       
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -83,8 +91,7 @@ class ChatGroupConsumer(WebsocketConsumer):
             if key == b'authorization':
                 Authorization_header = value
                 break
-        print('scope is')
-        print(scope['headers'])
+        
         access_token = Authorization_header.decode('utf-8').split( )[1]
         try:
             # Decode the JWT token
@@ -109,7 +116,7 @@ class ChatGroupConsumer(WebsocketConsumer):
     
     def is_member(self, user, group_name):
         try:
-            group = ChatGroup.objects.get(name=group_name)
+            group = ChatGroup.objects.get(name=self.group_name)
             return GroupMember.objects.filter(group=group, user=user).exists()
         except ChatGroup.DoesNotExist:
             return False
