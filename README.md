@@ -1,5 +1,5 @@
 <div align="center">
-<h1 align="center">Customized Chat app and Authenticatiobn  (Websocket and restframework API)</h1>
+<h1 align="center">Customized Chat app and Authentication  (Websocket and restframework API)</h1>
 <h3 align="center">Sample Project with base usage and deployment</h3>
 </div>
 <p align="center">
